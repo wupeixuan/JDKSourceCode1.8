@@ -1,0 +1,118 @@
+
+Lsquid:S1191"5Use classes from the Java API instead of Sun classes.( ¸¤
+dsquid:S1192ß"GDefine a constant instead of duplicating this literal "button" 4 times.(ò‚é¨üÿÿÿÿ
+dsquid:S1192Õ"GDefine a constant instead of duplicating this literal "trough" 5 times.(æ¥Ò¥ûÿÿÿÿ
+asquid:S1192¦	"IDefine a constant instead of duplicating this literal "treeview" 3 times.( ´¸²
+fsquid:S1192Ê"IDefine a constant instead of duplicating this literal "menuitem" 3 times.(¶…ç¼ıÿÿÿÿ
+nsquid:S1192¾"QDefine a constant instead of duplicating this literal "focus-line-width" 3 times.(ÿÈıÁúÿÿÿÿ
+csquid:S1192‘"FDefine a constant instead of duplicating this literal "arrow" 3 times.(ƒë¯üÿÿÿÿ
+lsquid:S1192 
+"ODefine a constant instead of duplicating this literal "indicator-size" 4 times.(¥›ıçıÿÿÿÿ
+Vsquid:S4973›"9Use the "equals" method if value comparison was intended.(‹™äùùÿÿÿÿ
+Vsquid:S4973Û"9Use the "equals" method if value comparison was intended.(¹¶Íèûÿÿÿÿ
+Vsquid:S4973Ü"9Use the "equals" method if value comparison was intended.(§°†¨ıÿÿÿÿ
+Qsquid:S4973İ"9Use the "equals" method if value comparison was intended.(à ŒÆ
+Vsquid:S4973’"9Use the "equals" method if value comparison was intended.(ÆÀ“èşÿÿÿÿ
+Vsquid:S4973’"9Use the "equals" method if value comparison was intended.(ÆÀ“èşÿÿÿÿ
+Vsquid:S4973˜"9Use the "equals" method if value comparison was intended.(’Ñùúÿÿÿÿ
+Qsquid:S4973™"9Use the "equals" method if value comparison was intended.(‡«İ–
+Vsquid:S4973›"9Use the "equals" method if value comparison was intended.(şş¯Ñÿÿÿÿÿ
+Vsquid:S4973·"9Use the "equals" method if value comparison was intended.(ÆÀ“èşÿÿÿÿ
+Vsquid:S4973·"9Use the "equals" method if value comparison was intended.(ÆÀ“èşÿÿÿÿ
+Vsquid:S4973Ç"9Use the "equals" method if value comparison was intended.(ä†şÿÿÿÿ
+Qsquid:S4973É"9Use the "equals" method if value comparison was intended.(”Æ¦Ğ
+Vsquid:S4973Ë"9Use the "equals" method if value comparison was intended.(şş¯Ñÿÿÿÿÿ
+Vsquid:S4973ã"9Use the "equals" method if value comparison was intended.(ŒÊ°×şÿÿÿÿ
+Qsquid:S4973Ô	"9Use the "equals" method if value comparison was intended.(¬ŸÛŞ
+Qsquid:S4973Ø	"9Use the "equals" method if value comparison was intended.(¬‚Ô”
+Vsquid:S4973Ü	"9Use the "equals" method if value comparison was intended.(ëœÁÃúÿÿÿÿ
+Vsquid:S00107"=Method has 12 parameters, which is greater than 7 authorized.(¤ªú¾
+Zsquid:S00107À	"<Method has 9 parameters, which is greater than 7 authorized.(ÃÙ¥ûÿÿÿÿ
+[squid:S00107Ì	"=Method has 10 parameters, which is greater than 7 authorized.(±æ”Åÿÿÿÿÿ
+Usquid:S00107÷	"<Method has 8 parameters, which is greater than 7 authorized.(òÊİ‘
+Zsquid:S00107´
+"<Method has 8 parameters, which is greater than 7 authorized.(Ç·ÜËúÿÿÿÿ
+Zsquid:S00107Ú
+"<Method has 8 parameters, which is greater than 7 authorized.(¿êÂ¥üÿÿÿÿ
+Tsquid:S1197="8Move the array designator from the variable to the type.(¹‘â¿úÿÿÿÿ
+osquid:ModifiersOrderCheckB"EReorder the modifiers to comply with the Java Language Specification.(ÔÕŠşüÿÿÿÿ
+osquid:ModifiersOrderCheckC"EReorder the modifiers to comply with the Java Language Specification.(Í‘ôÒıÿÿÿÿ
+Qsquid:S1161M":Add the "@Override" annotation above this method signature(ë¯Í
+Qsquid:S1161R":Add the "@Override" annotation above this method signature(Ğ‹³ˆ
+Psquid:S1161X":Add the "@Override" annotation above this method signature(ÉÀ¤M
+Vsquid:S1161a":Add the "@Override" annotation above this method signature(£Å½—şÿÿÿÿ
+Vsquid:S1161k":Add the "@Override" annotation above this method signature(ÉÕÊıÿÿÿÿ
+Qsquid:S1161~":Add the "@Override" annotation above this method signature(íÄ–
+Qsquid:S1161":Add the "@Override" annotation above this method signature(»˜İ6
+Wsquid:S1161™":Add the "@Override" annotation above this method signature(¿ò…¡ıÿÿÿÿ
+Rsquid:S1161¦":Add the "@Override" annotation above this method signature(åìãÕ
+Qsquid:S1161½":Add the "@Override" annotation above this method signature(©×²z
+Rsquid:S1161Ô":Add the "@Override" annotation above this method signature(¦Ùµø
+Rsquid:S1161ñ":Add the "@Override" annotation above this method signature(ĞÁ™ 
+Wsquid:S1161ú":Add the "@Override" annotation above this method signature(ÅÁëüÿÿÿÿ
+Wsquid:S1161„":Add the "@Override" annotation above this method signature(ùÙääùÿÿÿÿ
+Rsquid:S1161Š":Add the "@Override" annotation above this method signature(è´Ç†
+jsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(¤ªú¾
+Wsquid:S1161ş":Add the "@Override" annotation above this method signature(ß‘ùèûÿÿÿÿ
+V"squid:SwitchLastCaseIsDefaultCheck†""Add a default case to this switch.(Æóõµıÿÿÿÿ
+osquid:S3776¯"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¹ÿı©ùÿÿÿÿ
+Wsquid:S1161¯":Add the "@Override" annotation above this method signature(¹ÿı©ùÿÿÿÿ
+Wsquid:S1161ı":Add the "@Override" annotation above this method signature(ì°”óûÿÿÿÿ
+Wsquid:S1161ƒ":Add the "@Override" annotation above this method signature(½ŒĞåùÿÿÿÿ
+Rsquid:S1161š":Add the "@Override" annotation above this method signature(ÙÍûš
+Rsquid:S1161¡":Add the "@Override" annotation above this method signature(‰€õò
+Rsquid:S1161µ":Add the "@Override" annotation above this method signature(®¦‘³
+Wsquid:S1161Í":Add the "@Override" annotation above this method signature(ÂÈçúÿÿÿÿ
+Rsquid:S1161Û":Add the "@Override" annotation above this method signature(ëí
+Rsquid:S1161î":Add the "@Override" annotation above this method signature(·…òù
+Rsquid:S1161û":Add the "@Override" annotation above this method signature(©Şñ½
+\squid:S3252ª"EUse static access with "javax.swing.SwingConstants" for "HORIZONTAL".(½»öx
+\squid:S3252¹"EUse static access with "javax.swing.SwingConstants" for "HORIZONTAL".(½»öx
+\squid:S3252Å"EUse static access with "javax.swing.SwingConstants" for "HORIZONTAL".(½»öx
+Wsquid:S1161Ñ":Add the "@Override" annotation above this method signature(£µ³©üÿÿÿÿ
+Rsquid:S1161†":Add the "@Override" annotation above this method signature(ÏçÁ¤
+]squid:S3252"EUse static access with "javax.swing.SwingConstants" for "HORIZONTAL".(³ë 
+bsquid:S3252"EUse static access with "javax.swing.SwingConstants" for "HORIZONTAL".(Ê ôÑûÿÿÿÿ
+Rsquid:S1161œ":Add the "@Override" annotation above this method signature(¡Òùª
+Qsquid:S1161¥":Add the "@Override" annotation above this method signature(ø¼[
+Rsquid:S1161º":Add the "@Override" annotation above this method signature(È„íƒ
+Rsquid:S1161À":Add the "@Override" annotation above this method signature(úšŞÈ
+Rsquid:S1161ç":Add the "@Override" annotation above this method signature(¬¯¶¼
+Qsquid:S1161‚":Add the "@Override" annotation above this method signature(Î£¦?
+Rsquid:S1161Š":Add the "@Override" annotation above this method signature( ¥¾„
+Rsquid:S1161’":Add the "@Override" annotation above this method signature(Ä‹Ö¨
+osquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(ƒÍ¹·üÿÿÿÿ
+Rsquid:S1161ı":Add the "@Override" annotation above this method signature(ä¬•”
+Rsquid:S1161†":Add the "@Override" annotation above this method signature(ˆ¿ÿ¥
+Rsquid:S1161˜":Add the "@Override" annotation above this method signature(†²Ò
+Wsquid:S1161Å":Add the "@Override" annotation above this method signature(¢ò´€üÿÿÿÿ
+[squid:S3252Ö">Use static access with "java.awt.Adjustable" for "HORIZONTAL".(âû—Øùÿÿÿÿ
+Usquid:S3252ò">Use static access with "java.awt.Adjustable" for "HORIZONTAL".(ÚÙƒi
+Wsquid:S1161ÿ":Add the "@Override" annotation above this method signature(ùô¸Ğıÿÿÿÿ
+Rsquid:S1161‘	":Add the "@Override" annotation above this method signature(¡§Ø¾
+Wsquid:S1161¢	":Add the "@Override" annotation above this method signature(õ½È½üÿÿÿÿ
+Rsquid:S1161­	":Add the "@Override" annotation above this method signature(æ¾ê¦
+Wsquid:S1161·	":Add the "@Override" annotation above this method signature(Å‹®ıÿÿÿÿ
+^squid:S2147ï	"FCombine this catch with the one at line 1261, which has the same body.(ÄéÍõ
+^squid:S2147„
+"FCombine this catch with the one at line 1282, which has the same body.(ÄéÍõ
+>squid:S1172
+"&Remove these unused method parameters.(îÁû
+>squid:S1172©
+"&Remove these unused method parameters.(îÁû
+Csquid:S1172µ
+"&Remove these unused method parameters.(ã‡£üÿÿÿÿ
+>squid:S1172Á
+"&Remove these unused method parameters.(îÁû
+>squid:S1172Î
+"&Remove these unused method parameters.(îÁû
+Dsquid:S1172ì
+",Remove this unused method parameter "state".(îÁû
+Dsquid:S1172ò
+",Remove this unused method parameter "state".(îÁû
+Wsquid:S1161¯":Add the "@Override" annotation above this method signature(“ ˆûÿÿÿÿÿ
+Rsquid:S1161½":Add the "@Override" annotation above this method signature(¹ğÖ‰
+Wsquid:S1161Ç":Add the "@Override" annotation above this method signature(Ö£¸Áüÿÿÿÿ
+Wsquid:S1161Ï":Add the "@Override" annotation above this method signature(“ ˆûÿÿÿÿÿ
+Rsquid:S1161à":Add the "@Override" annotation above this method signature(¹ğÖ‰
+Wsquid:S1161å":Add the "@Override" annotation above this method signature(Ö£¸Áüÿÿÿÿ

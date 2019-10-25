@@ -1,0 +1,31 @@
+
+Lsquid:S11916"5Use classes from the Java API instead of Sun classes.(²Óáë
+Zsquid:S00107±"<Method has 8 parameters, which is greater than 7 authorized.(‡¯„ùÿÿÿÿ
+_squid:UselessImportCheck ";Remove this unused import 'java.net.MalformedURLException'.(ªËŞˆ
+qsquid:S3008ó"TRename this field "usr_paths" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’µŞøÿÿÿÿ
+ksquid:S3008ô"TRename this field "sys_paths" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(úåš
+>squid:S1452ä"&Remove usage of generic wildcard type.(¡”¥‘
+Csquid:S1452‘"&Remove usage of generic wildcard type.(ç¤ÿşÿÿÿÿ
+=squid:S1452‘"&Remove usage of generic wildcard type.(§ÏŞ
+Csquid:S1452¿"&Remove usage of generic wildcard type.(Î¡òûÿÿÿÿ
+Rsquid:S1133¿"5Do not forget to remove this deprecated code someday.(Î¡òûÿÿÿÿ
+>squid:S1452ÿ"&Remove usage of generic wildcard type.(ÕéÌú
+Psquid:S1197®"8Move the array designator from the variable to the type.(ÅâğŠ
+Csquid:S1452õ"&Remove usage of generic wildcard type.(æµßùúÿÿÿÿ
+Csquid:S1452¾"&Remove usage of generic wildcard type.(Â¶¹øÿÿÿÿ
+^squid:S1126ç"AReplace this if-then-else statement by a single return statement.(‘Æ¼½øÿÿÿÿ
+osquid:S3776‹"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(—•ˆÇúÿÿÿÿ
+Csquid:S1452ß"&Remove usage of generic wildcard type.(˜šôˆşÿÿÿÿ
+>squid:S1452‹"&Remove usage of generic wildcard type.(êÑ»¾
+jsquid:ModifiersOrderCheck‘"EReorder the modifiers to comply with the Java Language Specification.(©ˆt
+jsquid:S3776§"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(ı–¯
+a"squid:ObjectFinalizeOverridenCheckÉ"-Do not override the Object.finalize() method.(œäºÒúÿÿÿÿ
+>squid:S1452à"&Remove usage of generic wildcard type.(Á  Ô
+Usquid:S1197ó"8Move the array designator from the variable to the type.(’µŞøÿÿÿÿ
+Osquid:S1197ô"8Move the array designator from the variable to the type.(úåš
+<squid:S1659ú"Declare "j" on a separate line.(ğŠøÿÿÿÿ
+<squid:S1659ú"Declare "n" on a separate line.(ğŠøÿÿÿÿ
+isquid:S3776—"RRefactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.(úğ¢
+osquid:S3776Ğ"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(øÜûøÿÿÿÿ
+hsquid:CommentedOutCodeLineŞ"<This block of commented-out lines of code should be removed.(•«¡ûÿÿÿÿ
+csquid:CommentedOutCodeLineı"<This block of commented-out lines of code should be removed.(è¸
