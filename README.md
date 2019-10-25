@@ -8,5 +8,5 @@
 <a href="https://blog.csdn.net/qq_27276045/article/details/88891315">Runtime源码解析</a><br/>
 <a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/ThreadLocal.java">ThreadLocal源码</a><br/>
 
-![](https://img2018.cnblogs.com/blog/1356806/201910/1356806-20191024093853543-577949041.png)
+![code](https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/doc/code.png)
 
