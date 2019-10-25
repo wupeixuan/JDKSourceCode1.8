@@ -1,7 +1,0 @@
-
-Qsquid:S1191"5Use classes from the Java API instead of Sun classes.(íÙìžûÿÿÿÿ
-Psquid:S16104"9Convert the abstract class "JavacTask" into an interface.(Ð‹»ž
->squid:S1872@"'Use an "instanceof" comparison instead.(„¬Õ¿
-Bsquid:S1452O"&Remove usage of generic wildcard type.(œ«˜³ùÿÿÿÿ
-=squid:S1452Y"&Remove usage of generic wildcard type.(§¨òø
-Bsquid:S1452b"&Remove usage of generic wildcard type.(ÛŸ­ðýÿÿÿÿ

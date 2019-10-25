@@ -1,9 +1,0 @@
-
-Qsquid:S1191"5Use classes from the Java API instead of Sun classes.(«ª§Ûüÿÿÿÿ
-Ksquid:S1133Y"5Do not forget to remove this deprecated code someday.(æÌ¿Y
-Osquid:MissingDeprecatedCheckY"(Add the missing @deprecated Javadoc tag.(æÌ¿Y
-Usquid:S1197‹"8Move the array designator from the variable to the type.(×Œî²þÿÿÿÿ
-Msquid:S1133…"5Do not forget to remove this deprecated code someday.(è†Ó¼
-Qsquid:MissingDeprecatedCheck…"(Add the missing @deprecated Javadoc tag.(è†Ó¼
-Rsquid:S1133Ž"5Do not forget to remove this deprecated code someday.(—äßÞüÿÿÿÿ
-Vsquid:MissingDeprecatedCheckŽ"(Add the missing @deprecated Javadoc tag.(—äßÞüÿÿÿÿ

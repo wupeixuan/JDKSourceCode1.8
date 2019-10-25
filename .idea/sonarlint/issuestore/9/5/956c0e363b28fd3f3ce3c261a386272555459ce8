@@ -1,14 +1,0 @@
-
-Qsquid:S1191("5Use classes from the Java API instead of Sun classes.(ÉÃ¾åüÿÿÿÿ
-asquid:UselessImportCheck%"8Remove this unused import 'java.security.AllPermission'.(Åİ÷½ùÿÿÿÿ
-_squid:UselessImportCheck!"6Remove this unused import 'java.util.StringTokenizer'.(ÈÄ¬ñşÿÿÿÿ
-Ksquid:S3077€".Remove the "volatile" keyword from this field.(Ø£İøÿÿÿÿ
-Fsquid:S3077Ë".Remove the "volatile" keyword from this field.(ÿäÓÑ
-jsquid:ModifiersOrderCheckS"EReorder the modifiers to comply with the Java Language Specification.(–†µì
-jsquid:ModifiersOrderCheckn"EReorder the modifiers to comply with the Java Language Specification.(¦›Ô±
-osquid:ModifiersOrderCheck|"EReorder the modifiers to comply with the Java Language Specification.(­ªëùÿÿÿÿÿ
-qsquid:S1215á"TDon't try to be smarter than the JVM, remove this call to run the garbage collector.(‚êİ§şÿÿÿÿ
-Lsquid:S1133”"5Do not forget to remove this deprecated code someday.(æÌ¿Y
-Bsquid:S00108ú")Either remove or fill this block of code.(Ü–„ş
-Csquid:S1452Ó	"&Remove usage of generic wildcard type.(ÙÈôıÿÿÿÿ
-Jsquid:ObjectFinalizeCheckö	"Remove this call to finalize().(àŒœ›øÿÿÿÿ
