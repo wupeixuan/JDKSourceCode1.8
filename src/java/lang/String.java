@@ -1,28 +1,3 @@
-/*
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
 package java.lang;
 
 import java.io.ObjectStreamField;
@@ -110,13 +85,16 @@ import java.util.regex.PatternSyntaxException;
 
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
-    /** The value is used for character storage. */
+    /**
+     * String底层是使用字符数组存储的
+     */
     private final char value[];
 
-    /** Cache the hash code for the string */
-    private int hash; // Default to 0
+    /**
+     * 用于缓存字符串的哈希值，默认为0
+     */
+    private int hash;
 
-    /** use serialVersionUID from JDK 1.0.2 for interoperability */
     private static final long serialVersionUID = -6849794470754667710L;
 
     /**
@@ -612,12 +590,9 @@ public final class String
     }
 
     /**
-     * Returns the length of this string.
-     * The length is equal to the number of <a href="Character.html#unicode">Unicode
-     * code units</a> in the string.
+     * 获取字符串的长度，此方法返回等于字符串中16位Unicode字符数的任何字符串的长度
      *
-     * @return  the length of the sequence of characters represented by this
-     *          object.
+     * @return 返回字符串的长度
      */
     public int length() {
         return value.length;
@@ -3061,12 +3036,10 @@ public final class String
     }
 
     /**
-     * Returns the string representation of the {@code boolean} argument.
+     * 将 boolean 变量转换成字符串
      *
-     * @param   b   a {@code boolean}.
-     * @return  if the argument is {@code true}, a string equal to
-     *          {@code "true"} is returned; otherwise, a string equal to
-     *          {@code "false"} is returned.
+     * @param b boolean 变量
+     * @return 如果参数为 true，返回字符串"true"； 否则，返回"false"。
      */
     public static String valueOf(boolean b) {
         return b ? "true" : "false";
