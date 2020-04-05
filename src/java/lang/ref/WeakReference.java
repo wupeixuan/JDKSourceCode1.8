@@ -1,69 +1,29 @@
-/*
- * Copyright (c) 1997, 2003, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
 package java.lang.ref;
 
-
 /**
- * Weak reference objects, which do not prevent their referents from being
- * made finalizable, finalized, and then reclaimed.  Weak references are most
- * often used to implement canonicalizing mappings.
+ * 弱引用(Weak Reference)
+ * 当一个对象为弱引用时，运行 GC 后会回收其引用指向的对象
+ * 它可以用于解决非静态内部类的内存泄露问题（定义一个静态内部类，并让它持有外部类的弱引用）
+ * 还可以用于实现缓存，比如 WeakHashMap
  *
- * <p> Suppose that the garbage collector determines at a certain point in time
- * that an object is <a href="package-summary.html#reachability">weakly
- * reachable</a>.  At that time it will atomically clear all weak references to
- * that object and all weak references to any other weakly-reachable objects
- * from which that object is reachable through a chain of strong and soft
- * references.  At the same time it will declare all of the formerly
- * weakly-reachable objects to be finalizable.  At the same time or at some
- * later time it will enqueue those newly-cleared weak references that are
- * registered with reference queues.
- *
- * @author   Mark Reinhold
- * @since    1.2
+ * @param <T>
  */
-
 public class WeakReference<T> extends Reference<T> {
 
     /**
-     * Creates a new weak reference that refers to the given object.  The new
-     * reference is not registered with any queue.
+     * 对 referent 对象进行弱引用
      *
-     * @param referent object the new weak reference will refer to
+     * @param referent 被弱引用的对象
      */
     public WeakReference(T referent) {
         super(referent);
     }
 
     /**
-     * Creates a new weak reference that refers to the given object and is
-     * registered with the given queue.
+     * 对 referent 对象进行弱引用，在对象被回收后，会把弱引用对象，也就是 WeakReference 对象或者其子类的对象，放入队列 ReferenceQueue 中
      *
-     * @param referent object the new weak reference will refer to
-     * @param q the queue with which the reference is to be registered,
-     *          or <tt>null</tt> if registration is not required
+     * @param referent 被弱引用的对象
+     * @param q        引用队列
      */
     public WeakReference(T referent, ReferenceQueue<? super T> q) {
         super(referent, q);

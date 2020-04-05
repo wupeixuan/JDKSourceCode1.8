@@ -40,4 +40,8 @@
 
 <a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/Runtime.java">Runtime 源码解析</a>
 
-<a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/ThreadLocal.java">ThreadLocal 源码</a>
+<a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/ThreadLocal.java">ThreadLocal 源码解析</a>
+
+<a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/InheritableThreadLocal.java">InheritableThreadLocal 源码解析</a>
+
+<a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/ref/WeakReference.java">WeakReference 源码解析</a>
