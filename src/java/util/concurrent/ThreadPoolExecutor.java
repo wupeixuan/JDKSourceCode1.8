@@ -1,38 +1,3 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
-
 package java.util.concurrent;
 
 import java.security.AccessControlContext;
@@ -905,11 +870,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
             int rs = runStateOf(c);
 
             // Check if queue empty only if necessary.
-            if (rs >= SHUTDOWN &&
-                ! (rs == SHUTDOWN &&
-                   firstTask == null &&
-                   ! workQueue.isEmpty()))
+            if (rs >= SHUTDOWN && !(rs == SHUTDOWN && firstTask == null && !workQueue.isEmpty())) {
                 return false;
+            }
 
             for (;;) {
                 int wc = workerCountOf(c);
@@ -953,6 +916,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                 } finally {
                     mainLock.unlock();
                 }
+                // 如果成功添加了 Worker，就可以启动 Worker 了
                 if (workerAdded) {
                     t.start();
                     workerStarted = true;
@@ -1069,9 +1033,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
             }
 
             try {
-                Runnable r = timed ?
-                    workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
-                    workQueue.take();
+                Runnable r = timed ? workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) : workQueue.take();
                 if (r != null)
                     return r;
                 timedOut = true;
@@ -1133,15 +1095,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         try {
             while (task != null || (task = getTask()) != null) {
                 w.lock();
-                // If pool is stopping, ensure thread is interrupted;
-                // if not, ensure thread is not interrupted.  This
-                // requires a recheck in second case to deal with
-                // shutdownNow race while clearing interrupt
-                if ((runStateAtLeast(ctl.get(), STOP) ||
-                     (Thread.interrupted() &&
-                      runStateAtLeast(ctl.get(), STOP))) &&
-                    !wt.isInterrupted())
+                if ((runStateAtLeast(ctl.get(), STOP) || (Thread.interrupted() && runStateAtLeast(ctl.get(), STOP))) && !wt.isInterrupted()) {
                     wt.interrupt();
+                }
                 try {
                     beforeExecute(wt, task);
                     Throwable thrown = null;
@@ -1340,43 +1296,48 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * @throws NullPointerException if {@code command} is null
      */
     public void execute(Runnable command) {
-        if (command == null)
+        // 若任务为空，则抛 NPE，不能执行空任务
+        if (command == null) {
             throw new NullPointerException();
-        /*
-         * Proceed in 3 steps:
-         *
-         * 1. If fewer than corePoolSize threads are running, try to
-         * start a new thread with the given command as its first
-         * task.  The call to addWorker atomically checks runState and
-         * workerCount, and so prevents false alarms that would add
-         * threads when it shouldn't, by returning false.
-         *
-         * 2. If a task can be successfully queued, then we still need
-         * to double-check whether we should have added a thread
-         * (because existing ones died since last checking) or that
-         * the pool shut down since entry into this method. So we
-         * recheck state and if necessary roll back the enqueuing if
-         * stopped, or start a new thread if there are none.
-         *
-         * 3. If we cannot queue task, then we try to add a new
-         * thread.  If it fails, we know we are shut down or saturated
-         * and so reject the task.
-         */
+        }
         int c = ctl.get();
+        // 若工作线程数小于核心线程数，则创建新的线程，并把当前任务 command 作为这个线程的第一个任务
         if (workerCountOf(c) < corePoolSize) {
-            if (addWorker(command, true))
+            if (addWorker(command, true)) {
                 return;
+            }
             c = ctl.get();
         }
+        /**
+         * 至此，有以下两种情况：
+         * 1.当前工作线程数大于等于核心线程数
+         * 2.新建线程失败
+         * 此时会尝试将任务添加到阻塞队列 workQueue
+         */
+        // 若线程池处于 RUNNING 状态，将任务添加到阻塞队列 workQueue 中
         if (isRunning(c) && workQueue.offer(command)) {
+            // 再次检查线程池标记
             int recheck = ctl.get();
-            if (! isRunning(recheck) && remove(command))
+            // 如果线程池已不处于 RUNNING 状态，那么移除已入队的任务，并且执行拒绝策略
+            if (!isRunning(recheck) && remove(command)) {
+                // 任务添加到阻塞队列失败，执行拒绝策略
                 reject(command);
-            else if (workerCountOf(recheck) == 0)
+            }
+            // 如果线程池还是 RUNNING 的，并且线程数为 0，那么开启新的线程
+            else if (workerCountOf(recheck) == 0) {
                 addWorker(null, false);
+            }
         }
-        else if (!addWorker(command, false))
+        /**
+         * 至此，有以下两种情况：
+         * 1.线程池处于非运行状态，线程池不再接受新的线程
+         * 2.线程处于运行状态，但是阻塞队列已满，无法加入到阻塞队列
+         * 此时会尝试以最大线程数为限制创建新的工作线程
+         */
+        else if (!addWorker(command, false)) {
+            // 任务进入线程池失败，执行拒绝策略
             reject(command);
+        }
     }
 
     /**
