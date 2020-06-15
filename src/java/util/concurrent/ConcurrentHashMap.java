@@ -46,7 +46,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
     private static final float LOAD_FACTOR = 0.75f;
 
     /**
-     * 链表转树的阀值，如果table[i]下面的链表长度大于8时就转化为数
+     * 链表转树的阀值，如果table[i]下面的链表长度大于8时就转化为树
      */
     static final int TREEIFY_THRESHOLD = 8;
 
