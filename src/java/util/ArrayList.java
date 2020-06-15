@@ -71,7 +71,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * 带有容量initialCapacity的构造方法
      *
-     * @param 初始容量列表的初始容量
+     * @param initialCapacity 初始容量列表的初始容量
      * @throws IllegalArgumentException 如果指定容量为负
      */
     public ArrayList(int initialCapacity) {
@@ -84,8 +84,7 @@ public class ArrayList<E> extends AbstractList<E>
             this.elementData = EMPTY_ELEMENTDATA;
         } else {// 小于0
             // 则抛出IllegalArgumentException异常
-            throw new IllegalArgumentException("Illegal Capacity: " +
-                    initialCapacity);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
     }
 
@@ -107,8 +106,9 @@ public class ArrayList<E> extends AbstractList<E>
         elementData = c.toArray();
         if ((size = elementData.length) != 0) {
             // c.toarray可能（错误地）不返回对象[]（见JAVA BUG编号6260652）
-            if (elementData.getClass() != Object[].class)
+            if (elementData.getClass() != Object[].class) {
                 elementData = Arrays.copyOf(elementData, size, Object[].class);
+            }
         } else {
             // 使用空数组
             this.elementData = EMPTY_ELEMENTDATA;

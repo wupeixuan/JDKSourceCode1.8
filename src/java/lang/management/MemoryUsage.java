@@ -1,28 +1,3 @@
-/*
- * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
 package java.lang.management;
 
 import javax.management.openmbean.CompositeData;
@@ -104,9 +79,21 @@ import sun.management.MemoryUsageCompositeData;
  * @since   1.5
  */
 public class MemoryUsage {
+    /**
+     * JVM 在启动期间从操作系统请求的用于内存管理的初始内存容量（以字节为单位）
+     */
     private final long init;
+    /**
+     * 当前已经使用的内存量（以字节为单位）
+     */
     private final long used;
+    /**
+     * 保证可以由 JVM 使用的内存量（以字节为单位）
+     */
     private final long committed;
+    /**
+     * 用于内存管理的最大内存量（以字节为单位）
+     */
     private final long max;
 
     /**
@@ -236,6 +223,7 @@ public class MemoryUsage {
     /**
      * Returns a descriptive representation of this memory usage.
      */
+    @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append("init = " + init + "(" + (init >> 10) + "K) ");
