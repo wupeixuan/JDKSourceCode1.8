@@ -324,8 +324,9 @@ public class ThreadLocal<T> {
                         Object value = key.childValue(e.value);
                         Entry c = new Entry(key, value);
                         int h = key.threadLocalHashCode & (len - 1);
-                        while (table[h] != null)
+                        while (table[h] != null) {
                             h = nextIndex(h, len);
+                        }
                         table[h] = c;
                         size++;
                     }
@@ -466,11 +467,16 @@ public class ThreadLocal<T> {
             // incremental rehashing due to garbage collector freeing
             // up refs in bunches (i.e., whenever the collector runs).
             int slotToExpunge = staleSlot;
+            // 往左找直到遇到空插孔
             for (int i = prevIndex(staleSlot, len);
                  (e = tab[i]) != null;
-                 i = prevIndex(i, len))
-                if (e.get() == null)
+                 i = prevIndex(i, len)) {
+                // 如果遇到垃圾值
+                if (e.get() == null) {
+                    // 垃圾值所在插孔下标记作slotToExpunge
                     slotToExpunge = i;
+                }
+            }
 
             // Find either the key or trailing null slot of run, whichever
             // occurs first
@@ -491,8 +497,9 @@ public class ThreadLocal<T> {
                     tab[staleSlot] = e;
 
                     // Start expunge at preceding stale entry if it exists
-                    if (slotToExpunge == staleSlot)
+                    if (slotToExpunge == staleSlot) {
                         slotToExpunge = i;
+                    }
                     cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
                     return;
                 }
@@ -500,8 +507,9 @@ public class ThreadLocal<T> {
                 // If we didn't find stale entry on backward scan, the
                 // first stale entry seen while scanning for key is the
                 // first still present in the run.
-                if (k == null && slotToExpunge == staleSlot)
+                if (k == null && slotToExpunge == staleSlot) {
                     slotToExpunge = i;
+                }
             }
 
             // If key not found, put new entry in stale slot
@@ -509,8 +517,9 @@ public class ThreadLocal<T> {
             tab[staleSlot] = new Entry(key, value);
 
             // If there are any other stale entries in run, expunge them
-            if (slotToExpunge != staleSlot)
+            if (slotToExpunge != staleSlot) {
                 cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+            }
         }
 
         /**
@@ -547,8 +556,9 @@ public class ThreadLocal<T> {
 
                         // Unlike Knuth 6.4 Algorithm R, we must scan until
                         // null because multiple entries could have been stale.
-                        while (tab[h] != null)
+                        while (tab[h] != null) {
                             h = nextIndex(h, len);
+                        }
                         tab[h] = e;
                     }
                 }
@@ -605,8 +615,9 @@ public class ThreadLocal<T> {
             expungeStaleEntries();
 
             // Use lower threshold for doubling to avoid hysteresis
-            if (size >= threshold - threshold / 4)
+            if (size >= threshold - threshold / 4) {
                 resize();
+            }
         }
 
         /**
@@ -654,8 +665,9 @@ public class ThreadLocal<T> {
             int len = tab.length;
             for (int j = 0; j < len; j++) {
                 Entry e = tab[j];
-                if (e != null && e.get() == null)
+                if (e != null && e.get() == null) {
                     expungeStaleEntry(j);
+                }
             }
         }
     }
