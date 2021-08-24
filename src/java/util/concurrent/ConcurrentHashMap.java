@@ -315,7 +315,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
      * 正数或0代表hash表还没有被初始化，这个数值表示初始化或下一次进行扩容的大小，类似于扩容阈值。
      * 它的值始终是当前ConcurrentHashMap容量的0.75倍，这与loadfactor是对应的。实际容量>=sizeCtl，则扩容。
      */
-    private transient volatile int sizeCtl;//控制标识符
+    private transient volatile int sizeCtl;// 控制标识符
 
     /**
      * The next table index (plus one) to split while resizing.
@@ -1759,24 +1759,36 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Initializes table, using the size recorded in sizeCtl.
+     * 初始hash表, using the size recorded in sizeCtl.
      */
     private final Node<K, V>[] initTable() {
+        // 数组的临时变量
         Node<K, V>[] tab;
+        // 尺寸控制器临时变量
         int sc;
+        // 初始化不成功就一直搞
         while ((tab = table) == null || tab.length == 0) {
-            if ((sc = sizeCtl) < 0)
+            // 负数代表正在扩容
+            if ((sc = sizeCtl) < 0) {
+                // 此线程不去竞争 只做自旋
                 Thread.yield(); // lost initialization race; just spin
-            else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
+            } else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {// 对象 老值 副本 期望值  自旋修改sc
+                // 如果自旋成功返回true会往下走 否则回while处
                 try {
+                    // 按理说 能自旋成功的只有一个线程  这里可能是为了double check
                     if ((tab = table) == null || tab.length == 0) {
+                        // 尺寸控制器赋值
                         int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
+                        // 创建节点对象
                         @SuppressWarnings("unchecked")
                         Node<K, V>[] nt = (Node<K, V>[]) new Node<?, ?>[n];
+                        // 给数组赋值
                         table = tab = nt;
+                        // sc = 0.75 * n 即阈值
                         sc = n - (n >>> 2);
                     }
                 } finally {
+                    // sc之前的赋值不会影响sizeCtl 在这里来给sizeCtl赋值
                     sizeCtl = sc;
                 }
                 break;
