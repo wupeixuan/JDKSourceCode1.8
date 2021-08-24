@@ -409,6 +409,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
     /**
      * {@inheritDoc}
      */
+    @Override
     public int size() {
         long n = sumCount();
         return ((n < 0L) ? 0 :
