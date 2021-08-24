@@ -92,6 +92,11 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
     static final int MOVED = -1; // hash for forwarding nodes （forwarding nodes的hash值）、标示位
     static final int TREEBIN = -2; // hash值是-2  表示这是一个TreeBin节点
     static final int RESERVED = -3; // hash for transient reservations
+
+    /**
+     * Integer.MAX_VALUE
+     * 01111111 11111111 11111111 11111111
+     */
     static final int HASH_BITS = 0x7fffffff; // usable bits of normal node hash （ReservationNode的hash值）
 
     /**
@@ -129,10 +134,12 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
             this.next = next;
         }
 
+        @Override
         public final K getKey() {
             return key;
         }
 
+        @Override
         public final V getValue() {
             return val;
         }
@@ -191,6 +198,8 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
      * 对hashCode进行再散列，算法为(h ^ (h >>> 16)) & HASH_BITS
      */
     static final int spread(int h) {
+        // HASH_BITS二进制最高位是0 &HASH_BITS 只是为了保证第一位是0 保证hash值是正数
+        // h ^ (h >>> 16) 高16位右移异或 去扰动低16位 降低hash冲突
         return (h ^ (h >>> 16)) & HASH_BITS;
     }
 
@@ -503,6 +512,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
      * {@code null} if there was no mapping for {@code key}
      * @throws NullPointerException if the specified key or value is null
      */
+    @Override
     public V put(K key, V value) {
         return putVal(key, value, false);
     }
@@ -522,15 +532,21 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
      * 5、如果table[i]的节点是链表节点，则检查table的第i个位置的链表是否需要转化为数，如果需要则调用treeifyBin函数进行转化
      */
     final V putVal(K key, V value, boolean onlyIfAbsent) {
-        if (key == null || value == null) throw new NullPointerException();// key和value不允许null
-        int hash = spread(key.hashCode());//两次hash，减少hash冲突，可以均匀分布
-        int binCount = 0;//i处结点标志，0: 未加入新结点, 2: TreeBin或链表结点数, 其它：链表结点数。主要用于每次加入结点后查看是否要由链表转为红黑树
-        for (Node<K, V>[] tab = table; ; ) {//CAS经典写法，不成功无限重试
+        // key和value不允许null
+        if (key == null || value == null) {
+            throw new NullPointerException();
+        }
+        // 两次hash，减少hash冲突，可以均匀分布
+        int hash = spread(key.hashCode());
+        // 插孔节点数
+        int binCount = 0;// i处结点标志，0: 未加入新结点, 2: TreeBin或链表结点数, 其它：链表结点数。主要用于每次加入结点后查看是否要由链表转为红黑树
+        for (Node<K, V>[] tab = table; ; ) {// CAS经典写法，不成功无限重试
             Node<K, V> f;
             int n, i, fh;
-            //检查是否初始化了，如果没有，则初始化
-            if (tab == null || (n = tab.length) == 0)
+            // 检查是否初始化了，如果没有，则初始化
+            if (tab == null || (n = tab.length) == 0) {
                 tab = initTable();
+            }
             /**
              * i=(n-1)&hash 等价于i=hash%n(前提是n为2的幂次方).即取出table中位置的节点用f表示。 有如下两种情况：
              * 1、如果table[i]==null(即该位置的节点为空，没有发生碰撞)，则利用CAS操作直接存储在该位置， 如果CAS操作成功则退出死循环。
