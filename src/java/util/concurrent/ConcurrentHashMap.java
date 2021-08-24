@@ -157,6 +157,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         /**
          * HashMap使用if (o == this)，且嵌套if；ConcurrentHashMap使用&&
          */
+        @Override
         public final boolean equals(Object o) {
             Object k, v, u;
             Map.Entry<?, ?> e;
