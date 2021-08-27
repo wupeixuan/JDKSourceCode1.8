@@ -383,19 +383,21 @@ public class Thread implements Runnable {
         this.daemon = parent.isDaemon();
         // 子线程继承父线程的优先级属性
         this.priority = parent.getPriority();
-        if (security == null || isCCLOverridden(parent.getClass()))
+        if (security == null || isCCLOverridden(parent.getClass())) {
             this.contextClassLoader = parent.getContextClassLoader();
-        else
+        } else {
             this.contextClassLoader = parent.contextClassLoader;
+        }
         this.inheritedAccessControlContext =
                 acc != null ? acc : AccessController.getContext();
         this.target = target;
         setPriority(priority);
         // 当父线程的 inheritableThreadLocals 的值不为空时
         // 会把 inheritableThreadLocals 里面的值全部传递给子线程
-        if (inheritThreadLocals && parent.inheritableThreadLocals != null)
+        if (inheritThreadLocals && parent.inheritableThreadLocals != null) {
             this.inheritableThreadLocals =
                 ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);
+        }
         /* Stash the specified stack size in case the VM cares */
         this.stackSize = stackSize;
 
@@ -667,8 +669,9 @@ public class Thread implements Runnable {
      */
     public synchronized void start() {
         // 如果没有初始化，抛异常
-        if (threadStatus != 0)
+        if (threadStatus != 0) {
             throw new IllegalThreadStateException();
+        }
 
         // 将当前线程加入到所在的线程组，记录为活跃线程
         group.add(this);
@@ -1486,6 +1489,7 @@ public class Thread implements Runnable {
 
         /**
          * 运行中的线程
+         * RUNNABLE_READY调用start方法  RUNNABLE_RUNNING调用run方法
          */
         RUNNABLE,
 

@@ -1292,8 +1292,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     // Bit twiddling
 
     /**
-     * The number of bits used to represent an {@code int} value in two's
-     * complement binary form.
+     * The number of bits used to represent an {@code int} value in 二进制补码.
      *
      * @since 1.5
      */
@@ -1367,8 +1366,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      */
     public static int numberOfLeadingZeros(int i) {
         // HD, Figure 5-6
-        if (i == 0)
+        if (i == 0) {
             return 32;
+        }
         int n = 1;
         if (i >>> 16 == 0) { n += 16; i <<= 16; }
         if (i >>> 24 == 0) { n +=  8; i <<=  8; }
