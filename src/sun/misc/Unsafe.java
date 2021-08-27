@@ -698,11 +698,8 @@ public final class Unsafe {
     public native void ensureClassInitialized(Class<?> c);
 
     /**
-     * Report the offset of the first element in the storage allocation of a
-     * given array class.  If {@link #arrayIndexScale} returns a non-zero value
-     * for the same class, you may use that scale factor, together with this
-     * base offset, to form new offsets to access elements of arrays of the
-     * given class.
+     * 返回 类信息中数组第一个元素的偏移量.  If {@link #arrayIndexScale} returns a non-zero value
+     * for the same class, 可以配合'每个元素的偏移量'形成固定的偏移量到数组class指定的位置拿到元素.
      *
      * @see #getInt(Object, long)
      * @see #putInt(Object, long, int)

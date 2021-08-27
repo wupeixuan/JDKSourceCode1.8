@@ -1349,11 +1349,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     /**
-     * Returns the number of zero bits preceding the highest-order
-     * ("leftmost") one-bit in the two's complement binary representation
-     * of the specified {@code int} value.  Returns 32 if the
-     * specified value has no one-bits in its two's complement representation,
-     * in other words if it is equal to zero.
+     * 入参的二进制补码左边0的数量 如果入参是0那么结果就是32.
      *
      * <p>Note that this method is closely related to the logarithm base 2.
      * For all positive {@code int} values x:
