@@ -466,6 +466,7 @@ public interface BlockingDeque<E> extends BlockingQueue<E>, Deque<E> {
      * @throws IllegalArgumentException if some property of the specified
      *         element prevents it from being added to this deque
      */
+    @Override
     boolean offer(E e);
 
     /**

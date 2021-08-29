@@ -847,8 +847,9 @@ public class Thread implements Runnable {
      */
     public void interrupt() {
         // 如果由别的线程对当前线程发起中断
-        if (this != Thread.currentThread())
+        if (this != Thread.currentThread()) {
             checkAccess();
+        }
 
         synchronized (blockerLock) {
             Interruptible b = blocker;
@@ -1246,6 +1247,7 @@ public class Thread implements Runnable {
      *
      * @return 该线程的字符串表示
      */
+    @Override
     public String toString() {
         ThreadGroup group = getThreadGroup();
         if (group != null) {
@@ -1267,8 +1269,9 @@ public class Thread implements Runnable {
      */
     @CallerSensitive
     public ClassLoader getContextClassLoader() {
-        if (contextClassLoader == null)
+        if (contextClassLoader == null) {
             return null;
+        }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             ClassLoader.checkClassLoaderPermission(contextClassLoader,
@@ -1404,8 +1407,9 @@ public class Thread implements Runnable {
      * "enableContextClassLoaderOverride" RuntimePermission is checked.
      */
     private static boolean isCCLOverridden(Class<?> cl) {
-        if (cl == Thread.class)
+        if (cl == Thread.class) {
             return false;
+        }
 
         processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
         WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
@@ -1426,6 +1430,7 @@ public class Thread implements Runnable {
     private static boolean auditSubclass(final Class<?> subcl) {
         Boolean result = AccessController.doPrivileged(
             new PrivilegedAction<Boolean>() {
+                @Override
                 public Boolean run() {
                     for (Class<?> cl = subcl;
                          cl != Thread.class;
@@ -1702,8 +1707,9 @@ public class Thread implements Runnable {
          */
         @Override
         public boolean equals(Object obj) {
-            if (obj == this)
+            if (obj == this) {
                 return true;
+            }
 
             if (obj instanceof WeakClassKey) {
                 Object referent = get();

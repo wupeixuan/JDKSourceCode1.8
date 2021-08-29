@@ -908,6 +908,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      *         {@code false}
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(E e) {
         if (e == null) throw new NullPointerException();
         return transferer.transfer(e, true, 0) != null;

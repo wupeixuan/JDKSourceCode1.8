@@ -1192,6 +1192,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * @return {@code true} (as specified by {@link Queue#offer})
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(E e) {
         xfer(e, true, ASYNC, 0);
         return true;

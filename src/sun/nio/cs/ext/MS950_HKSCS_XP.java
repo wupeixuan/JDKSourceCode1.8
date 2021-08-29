@@ -38,6 +38,7 @@ public class MS950_HKSCS_XP extends Charset
         super("x-MS950-HKSCS-XP", ExtendedCharsets.aliasesFor("x-MS950-HKSCS-XP"));
     }
 
+    @Override
     public boolean contains(Charset cs) {
         return ((cs.name().equals("US-ASCII"))
                 || (cs instanceof MS950)

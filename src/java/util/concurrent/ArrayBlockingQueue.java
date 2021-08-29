@@ -159,8 +159,9 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         // assert items[putIndex] == null;
         final Object[] items = this.items;
         items[putIndex] = x;
-        if (++putIndex == items.length)
+        if (++putIndex == items.length) {
             putIndex = 0;
+        }
         count++;
         notEmpty.signal();
     }
@@ -321,14 +322,15 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      *
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(E e) {
         checkNotNull(e);
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-            if (count == items.length)
+            if (count == items.length) {
                 return false;
-            else {
+            } else {
                 enqueue(e);
                 return true;
             }

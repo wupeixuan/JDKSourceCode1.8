@@ -1002,6 +1002,7 @@ public class ScheduledThreadPoolExecutor
             }
         }
 
+        @Override
         public boolean offer(Runnable x) {
             if (x == null)
                 throw new NullPointerException();

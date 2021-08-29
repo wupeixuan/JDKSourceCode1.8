@@ -215,6 +215,7 @@ public interface BlockingQueue<E> extends Queue<E> {
      * @throws IllegalArgumentException if some property of the specified
      *         element prevents it from being added to this queue
      */
+    @Override
     boolean offer(E e);
 
     /**

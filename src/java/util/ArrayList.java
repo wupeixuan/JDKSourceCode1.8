@@ -435,8 +435,10 @@ public class ArrayList<E> extends AbstractList<E>
         int numMoved = size - index - 1;
         if (numMoved > 0)
             // 将elementData数组index+1位置开始拷贝到elementData从index开始的空间
+        {
             System.arraycopy(elementData, index + 1, elementData, index,
                     numMoved);
+        }
         // 使size-1 ，设置elementData的size位置为空，让GC来清理内存空间
         elementData[--size] = null; //便于垃圾回收器回收
 
@@ -788,9 +790,11 @@ public class ArrayList<E> extends AbstractList<E>
         }
 
         //删除元素
+        @Override
         public void remove() {
-            if (lastRet < 0)
+            if (lastRet < 0) {
                 throw new IllegalStateException();
+            }
             checkForComodification();//检查数组是否被修改
 
             try {
@@ -827,8 +831,9 @@ public class ArrayList<E> extends AbstractList<E>
 
         //检查数组是否被修改
         final void checkForComodification() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
         }
     }
 
@@ -841,34 +846,42 @@ public class ArrayList<E> extends AbstractList<E>
             cursor = index;
         }
 
+        @Override
         public boolean hasPrevious() {
             return cursor != 0;
         }
 
+        @Override
         public int nextIndex() {
             return cursor;
         }
 
+        @Override
         public int previousIndex() {
             return cursor - 1;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public E previous() {
             checkForComodification();
             int i = cursor - 1;
-            if (i < 0)
+            if (i < 0) {
                 throw new NoSuchElementException();
+            }
             Object[] elementData = ArrayList.this.elementData;
-            if (i >= elementData.length)
+            if (i >= elementData.length) {
                 throw new ConcurrentModificationException();
+            }
             cursor = i;
             return (E) elementData[lastRet = i];
         }
 
+        @Override
         public void set(E e) {
-            if (lastRet < 0)
+            if (lastRet < 0) {
                 throw new IllegalStateException();
+            }
             checkForComodification();
 
             try {
@@ -878,6 +891,7 @@ public class ArrayList<E> extends AbstractList<E>
             }
         }
 
+        @Override
         public void add(E e) {
             checkForComodification();
 
