@@ -660,9 +660,10 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * @param key 参数key
      * @return 如果没有映射到node，返回null，否则返回对应的value
      */
+    @Override
     public V remove(Object key) {
         Node<K, V> e;
-        //根据key来删除node。removeNode方法的具体实现在下面
+        // 根据key来删除node。removeNode方法的具体实现在下面
         return (e = removeNode(hash(key), key, null, false, true)) == null ?
                 null : e.value;
     }

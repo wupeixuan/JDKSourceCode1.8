@@ -911,6 +911,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                     wc >= (core ? corePoolSize : maximumPoolSize)) {
                     return false;
                 }
+                // 工人数量自增成功则直接跳出外层循环
                 if (compareAndIncrementWorkerCount(c)) {
                     break retry;
                 }
@@ -926,15 +927,15 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         boolean workerAdded = false;
         Worker w = null;
         try {
+            // 创建工人 也会创建一个线程
             w = new Worker(firstTask);
             final Thread t = w.thread;
             if (t != null) {
                 final ReentrantLock mainLock = this.mainLock;
                 mainLock.lock();
                 try {
-                    // Recheck while holding lock.
-                    // Back out on ThreadFactory failure or if
-                    // shut down before lock acquired.
+                    // 拿到锁后再检查一边.
+                    // 创建线程失败 or 获得锁之前SHUTDOWN了 就退出.
                     int rs = runStateOf(ctl.get());
 
                     if (rs < SHUTDOWN ||
@@ -960,6 +961,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                 }
             }
         } finally {
+            // 添加失败
             if (! workerStarted) {
                 addWorkerFailed(w);
             }
@@ -978,8 +980,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         final ReentrantLock mainLock = this.mainLock;
         mainLock.lock();
         try {
-            if (w != null)
+            if (w != null) {
                 workers.remove(w);
+            }
+            // wc减1
             decrementWorkerCount();
             tryTerminate();
         } finally {
@@ -1002,7 +1006,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      */
     private void processWorkerExit(Worker w, boolean completedAbruptly) {
         if (completedAbruptly) // If abrupt, then workerCount wasn't adjusted
+        {
             decrementWorkerCount();
+        }
 
         final ReentrantLock mainLock = this.mainLock;
         mainLock.lock();
@@ -1019,10 +1025,12 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         if (runStateLessThan(c, STOP)) {
             if (!completedAbruptly) {
                 int min = allowCoreThreadTimeOut ? 0 : corePoolSize;
-                if (min == 0 && ! workQueue.isEmpty())
+                if (min == 0 && ! workQueue.isEmpty()) {
                     min = 1;
-                if (workerCountOf(c) >= min)
+                }
+                if (workerCountOf(c) >= min) {
                     return; // replacement not needed
+                }
             }
             addWorker(null, false);
         }
@@ -1060,20 +1068,25 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 
             int wc = workerCountOf(c);
 
-            // Are workers subject to culling?
+            // Are workers subject to culling? worker可以消灭吗
             boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
 
             if ((wc > maximumPoolSize || (timed && timedOut))
                 && (wc > 1 || workQueue.isEmpty())) {
-                if (compareAndDecrementWorkerCount(c))
+                if (compareAndDecrementWorkerCount(c)) {
                     return null;
+                }
                 continue;
             }
 
             try {
+                // 线程可以消灭就poll一段时间（keepAliveTime），拿到任务就返回任务，否则就是超时了 就干掉worker
+                // 线程不能干掉 如果有任务就返回 没有就一直空转
                 Runnable r = timed ? workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) : workQueue.take();
-                if (r != null)
+                if (r != null) {
                     return r;
+                }
+
                 timedOut = true;
             } catch (InterruptedException retry) {
                 timedOut = false;
@@ -1127,6 +1140,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     final void runWorker(Worker w) {
         Thread wt = Thread.currentThread();
         Runnable task = w.firstTask;
+        // 如果firstTask不是null 第一次执行的时候会把变成null worker后面在执行其他任务也都是null
         w.firstTask = null;
         w.unlock(); // allow interrupts
         boolean completedAbruptly = true;
@@ -1354,7 +1368,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         /**
          * 至此，有以下两种情况：
          * 1.当前工作线程数大于等于核心线程数
-         * 2.新建线程失败
+         * 2.核心线程数不够且新建线程失败
          * 此时会尝试将任务添加到阻塞队列 workQueue
          */
         // 若线程池处于 RUNNING 状态，将任务添加到阻塞队列 workQueue 中
@@ -1394,6 +1408,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      *
      * @throws SecurityException {@inheritDoc}
      */
+    @Override
     public void shutdown() {
         final ReentrantLock mainLock = this.mainLock;
         mainLock.lock();
@@ -1662,8 +1677,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
             throw new IllegalArgumentException("Core threads must have nonzero keep alive times");
         if (value != allowCoreThreadTimeOut) {
             allowCoreThreadTimeOut = value;
-            if (value)
+            if (value) {
                 interruptIdleWorkers();
+            }
         }
     }
 
