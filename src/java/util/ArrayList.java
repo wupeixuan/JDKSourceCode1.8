@@ -771,22 +771,25 @@ public class ArrayList<E> extends AbstractList<E>
         int expectedModCount = modCount;//迭代过程不运行修改数组，否则就抛出异常
 
         //是否还有下一个
+        @Override
         public boolean hasNext() {
             return cursor != size;
         }
 
         //下一个元素
+        @Override
         @SuppressWarnings("unchecked")
         public E next() {
-            checkForComodification();//检查数组是否被修改
+            checkForComodification();// 检查数组是否被修改
             int i = cursor;
-            if (i >= size)
+            if (i >= size) {
                 throw new NoSuchElementException();
+            }
             Object[] elementData = ArrayList.this.elementData;
             if (i >= elementData.length)
                 throw new ConcurrentModificationException();
-            cursor = i + 1;//向后移动游标
-            return (E) elementData[lastRet = i];//设置访问的位置并返回这个值
+            cursor = i + 1;// 向后移动游标
+            return (E) elementData[lastRet = i];// 设置访问的位置并返回这个值
         }
 
         //删除元素
