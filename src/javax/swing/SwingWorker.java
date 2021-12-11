@@ -763,6 +763,7 @@ public abstract class SwingWorker<T, V> implements RunnableFuture<T> {
                 new ThreadFactory() {
                     final ThreadFactory defaultFactory =
                         Executors.defaultThreadFactory();
+                    @Override
                     public Thread newThread(final Runnable r) {
                         Thread thread =
                             defaultFactory.newThread(r);

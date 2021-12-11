@@ -159,8 +159,9 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         // assert items[putIndex] == null;
         final Object[] items = this.items;
         items[putIndex] = x;
-        if (++putIndex == items.length)
+        if (++putIndex == items.length) {
             putIndex = 0;
+        }
         count++;
         notEmpty.signal();
     }
@@ -321,14 +322,15 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      *
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(E e) {
         checkNotNull(e);
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-            if (count == items.length)
+            if (count == items.length) {
                 return false;
-            else {
+            } else {
                 enqueue(e);
                 return true;
             }
@@ -395,26 +397,34 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         }
     }
 
+    @Override
     public E take() throws InterruptedException {
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
-            while (count == 0)
+            while (count == 0) {
                 notEmpty.await();
+            }
             return dequeue();
         } finally {
             lock.unlock();
         }
     }
 
+    @Override
     public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+        // 和时间单位组合一下变成纳秒
         long nanos = unit.toNanos(timeout);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
+            // 队列里没有了
             while (count == 0) {
-                if (nanos <= 0)
+                // 等够超时时间就return null
+                if (nanos <= 0) {
                     return null;
+                }
+                // 等待timeout时间
                 nanos = notEmpty.awaitNanos(nanos);
             }
             return dequeue();

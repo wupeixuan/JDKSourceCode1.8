@@ -232,6 +232,7 @@ public class HashSet<E>
      * @param o object to be removed from this set, if present
      * @return <tt>true</tt> if the set contained the specified element
      */
+    @Override
     public boolean remove(Object o) {
         return map.remove(o)==PRESENT;
     }

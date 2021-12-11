@@ -637,6 +637,7 @@ public class LinkedBlockingDeque<E>
     /**
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(E e) {
         return offerLast(e);
     }

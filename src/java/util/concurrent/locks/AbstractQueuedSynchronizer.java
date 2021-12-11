@@ -1671,8 +1671,9 @@ public abstract class AbstractQueuedSynchronizer
         /*
          * If cannot change waitStatus, the node has been cancelled.
          */
-        if (!compareAndSetWaitStatus(node, Node.CONDITION, 0))
+        if (!compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
             return false;
+        }
 
         /*
          * Splice onto queue and try to set waitStatus of predecessor to
@@ -1682,8 +1683,9 @@ public abstract class AbstractQueuedSynchronizer
          */
         Node p = enq(node);
         int ws = p.waitStatus;
-        if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))
+        if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL)) {
             LockSupport.unpark(node.thread);
+        }
         return true;
     }
 
@@ -1853,10 +1855,11 @@ public abstract class AbstractQueuedSynchronizer
                 t = lastWaiter;
             }
             Node node = new Node(Thread.currentThread(), Node.CONDITION);
-            if (t == null)
+            if (t == null) {
                 firstWaiter = node;
-            else
+            } else {
                 t.nextWaiter = node;
+            }
             lastWaiter = node;
             return node;
         }
@@ -1869,8 +1872,9 @@ public abstract class AbstractQueuedSynchronizer
          */
         private void doSignal(Node first) {
             do {
-                if ( (firstWaiter = first.nextWaiter) == null)
+                if ( (firstWaiter = first.nextWaiter) == null) {
                     lastWaiter = null;
+                }
                 first.nextWaiter = null;
             } while (!transferForSignal(first) &&
                      (first = firstWaiter) != null);
@@ -1911,9 +1915,9 @@ public abstract class AbstractQueuedSynchronizer
                 Node next = t.nextWaiter;
                 if (t.waitStatus != Node.CONDITION) {
                     t.nextWaiter = null;
-                    if (trail == null)
+                    if (trail == null) {
                         firstWaiter = next;
-                    else
+                    } else
                         trail.nextWaiter = next;
                     if (next == null)
                         lastWaiter = trail;
@@ -1934,12 +1938,15 @@ public abstract class AbstractQueuedSynchronizer
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *         returns {@code false}
          */
+        @Override
         public final void signal() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             Node first = firstWaiter;
-            if (first != null)
+            if (first != null) {
                 doSignal(first);
+            }
         }
 
         /**
@@ -2029,23 +2036,30 @@ public abstract class AbstractQueuedSynchronizer
          * <li> If interrupted while blocked in step 4, throw InterruptedException.
          * </ol>
          */
+        @Override
         public final void await() throws InterruptedException {
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             int interruptMode = 0;
             while (!isOnSyncQueue(node)) {
                 LockSupport.park(this);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
+            }
             if (node.nextWaiter != null) // clean up if cancelled
+            {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
         }
 
         /**
@@ -2061,10 +2075,12 @@ public abstract class AbstractQueuedSynchronizer
          * <li> If interrupted while blocked in step 4, throw InterruptedException.
          * </ol>
          */
+        @Override
         public final long awaitNanos(long nanosTimeout)
                 throws InterruptedException {
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             final long deadline = System.nanoTime() + nanosTimeout;
@@ -2074,18 +2090,23 @@ public abstract class AbstractQueuedSynchronizer
                     transferAfterCancelledWait(node);
                     break;
                 }
-                if (nanosTimeout >= spinForTimeoutThreshold)
+                if (nanosTimeout >= spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                }
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
                 nanosTimeout = deadline - System.nanoTime();
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return deadline - System.nanoTime();
         }
 

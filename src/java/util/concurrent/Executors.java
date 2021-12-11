@@ -573,14 +573,17 @@ public class Executors {
                          "-thread-";
         }
 
+        @Override
         public Thread newThread(Runnable r) {
             Thread t = new Thread(group, r,
                                   namePrefix + threadNumber.getAndIncrement(),
                                   0);
-            if (t.isDaemon())
+            if (t.isDaemon()) {
                 t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
                 t.setPriority(Thread.NORM_PRIORITY);
+            }
             return t;
         }
     }
@@ -608,6 +611,7 @@ public class Executors {
             this.ccl = Thread.currentThread().getContextClassLoader();
         }
 
+        @Override
         public Thread newThread(final Runnable r) {
             return super.newThread(new Runnable() {
                 public void run() {

@@ -1292,8 +1292,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     // Bit twiddling
 
     /**
-     * The number of bits used to represent an {@code int} value in two's
-     * complement binary form.
+     * The number of bits used to represent an {@code int} value in 二进制补码.
      *
      * @since 1.5
      */
@@ -1349,11 +1348,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     /**
-     * Returns the number of zero bits preceding the highest-order
-     * ("leftmost") one-bit in the two's complement binary representation
-     * of the specified {@code int} value.  Returns 32 if the
-     * specified value has no one-bits in its two's complement representation,
-     * in other words if it is equal to zero.
+     * 入参的二进制补码左边0的数量 如果入参是0那么结果就是32.
      *
      * <p>Note that this method is closely related to the logarithm base 2.
      * For all positive {@code int} values x:
@@ -1371,8 +1366,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      */
     public static int numberOfLeadingZeros(int i) {
         // HD, Figure 5-6
-        if (i == 0)
+        if (i == 0) {
             return 32;
+        }
         int n = 1;
         if (i >>> 16 == 0) { n += 16; i <<= 16; }
         if (i >>> 24 == 0) { n +=  8; i <<=  8; }

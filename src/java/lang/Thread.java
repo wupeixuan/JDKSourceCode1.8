@@ -383,19 +383,21 @@ public class Thread implements Runnable {
         this.daemon = parent.isDaemon();
         // 子线程继承父线程的优先级属性
         this.priority = parent.getPriority();
-        if (security == null || isCCLOverridden(parent.getClass()))
+        if (security == null || isCCLOverridden(parent.getClass())) {
             this.contextClassLoader = parent.getContextClassLoader();
-        else
+        } else {
             this.contextClassLoader = parent.contextClassLoader;
+        }
         this.inheritedAccessControlContext =
                 acc != null ? acc : AccessController.getContext();
         this.target = target;
         setPriority(priority);
         // 当父线程的 inheritableThreadLocals 的值不为空时
         // 会把 inheritableThreadLocals 里面的值全部传递给子线程
-        if (inheritThreadLocals && parent.inheritableThreadLocals != null)
+        if (inheritThreadLocals && parent.inheritableThreadLocals != null) {
             this.inheritableThreadLocals =
                 ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);
+        }
         /* Stash the specified stack size in case the VM cares */
         this.stackSize = stackSize;
 
@@ -667,8 +669,9 @@ public class Thread implements Runnable {
      */
     public synchronized void start() {
         // 如果没有初始化，抛异常
-        if (threadStatus != 0)
+        if (threadStatus != 0) {
             throw new IllegalThreadStateException();
+        }
 
         // 将当前线程加入到所在的线程组，记录为活跃线程
         group.add(this);
@@ -844,8 +847,9 @@ public class Thread implements Runnable {
      */
     public void interrupt() {
         // 如果由别的线程对当前线程发起中断
-        if (this != Thread.currentThread())
+        if (this != Thread.currentThread()) {
             checkAccess();
+        }
 
         synchronized (blockerLock) {
             Interruptible b = blocker;
@@ -1243,6 +1247,7 @@ public class Thread implements Runnable {
      *
      * @return 该线程的字符串表示
      */
+    @Override
     public String toString() {
         ThreadGroup group = getThreadGroup();
         if (group != null) {
@@ -1264,8 +1269,9 @@ public class Thread implements Runnable {
      */
     @CallerSensitive
     public ClassLoader getContextClassLoader() {
-        if (contextClassLoader == null)
+        if (contextClassLoader == null) {
             return null;
+        }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             ClassLoader.checkClassLoaderPermission(contextClassLoader,
@@ -1401,8 +1407,9 @@ public class Thread implements Runnable {
      * "enableContextClassLoaderOverride" RuntimePermission is checked.
      */
     private static boolean isCCLOverridden(Class<?> cl) {
-        if (cl == Thread.class)
+        if (cl == Thread.class) {
             return false;
+        }
 
         processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
         WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
@@ -1423,6 +1430,7 @@ public class Thread implements Runnable {
     private static boolean auditSubclass(final Class<?> subcl) {
         Boolean result = AccessController.doPrivileged(
             new PrivilegedAction<Boolean>() {
+                @Override
                 public Boolean run() {
                     for (Class<?> cl = subcl;
                          cl != Thread.class;
@@ -1486,6 +1494,7 @@ public class Thread implements Runnable {
 
         /**
          * 运行中的线程
+         * RUNNABLE_READY调用start方法  RUNNABLE_RUNNING调用run方法
          */
         RUNNABLE,
 
@@ -1698,8 +1707,9 @@ public class Thread implements Runnable {
          */
         @Override
         public boolean equals(Object obj) {
-            if (obj == this)
+            if (obj == this) {
                 return true;
+            }
 
             if (obj instanceof WeakClassKey) {
                 Object referent = get();

@@ -190,6 +190,7 @@ public class LinkedHashMap<K,V>
      * HashMap.Node subclass for normal LinkedHashMap entries.
      */
     static class Entry<K,V> extends HashMap.Node<K,V> {
+        // 双向链表
         Entry<K,V> before, after;
         Entry(int hash, K key, V value, Node<K,V> next) {
             super(hash, key, value, next);
@@ -218,13 +219,15 @@ public class LinkedHashMap<K,V>
 
     // internal utilities
 
-    // link at the end of list
+    // link at the end of list 把新节点连接到链表尾部
     private void linkNodeLast(LinkedHashMap.Entry<K,V> p) {
         LinkedHashMap.Entry<K,V> last = tail;
         tail = p;
-        if (last == null)
+        // 尾巴没有 头也没有？ 所以 新节点就是头
+        if (last == null) {
             head = p;
-        else {
+        } else {
+            // 否则新节点的前一个节点是之前的尾巴
             p.before = last;
             last.after = p;
         }
@@ -255,6 +258,7 @@ public class LinkedHashMap<K,V>
     Node<K,V> newNode(int hash, K key, V value, Node<K,V> e) {
         LinkedHashMap.Entry<K,V> p =
             new LinkedHashMap.Entry<K,V>(hash, key, value, e);
+        //
         linkNodeLast(p);
         return p;
     }

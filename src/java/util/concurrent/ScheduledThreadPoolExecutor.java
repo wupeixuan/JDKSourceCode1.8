@@ -757,6 +757,7 @@ public class ScheduledThreadPoolExecutor
      *
      * @throws SecurityException {@inheritDoc}
      */
+    @Override
     public void shutdown() {
         super.shutdown();
     }
@@ -1002,6 +1003,7 @@ public class ScheduledThreadPoolExecutor
             }
         }
 
+        @Override
         public boolean offer(Runnable x) {
             if (x == null)
                 throw new NullPointerException();
