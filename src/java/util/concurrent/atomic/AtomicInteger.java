@@ -30,6 +30,10 @@ public class AtomicInteger extends Number implements java.io.Serializable {
         } catch (Exception ex) { throw new Error(ex); }
     }
 
+    /**
+     * 内部的value属性，它就代表了Atomiclnteger 的当前实际取值。
+     * 所有的方法都是围绕该值进行的
+     */
     private volatile int value;
 
     /**
