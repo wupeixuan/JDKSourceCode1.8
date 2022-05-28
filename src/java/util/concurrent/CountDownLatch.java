@@ -161,25 +161,33 @@ public class CountDownLatch {
     private static final class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = 4982264981922014374L;
 
+
+        // 构造器
         Sync(int count) {
             setState(count);
         }
-
+        // 返回当前计数
         int getCount() {
             return getState();
         }
 
+        // 试图在共享模式下获取对象状态
         protected int tryAcquireShared(int acquires) {
             return (getState() == 0) ? 1 : -1;
         }
 
+        // 试图设置状态来反映共享模式下的一个释放
         protected boolean tryReleaseShared(int releases) {
             // Decrement count; signal when transition to zero
+            // 无限循环
             for (;;) {
+                // 获取状态
                 int c = getState();
-                if (c == 0)
+                if (c == 0)// 没有被线程占有
                     return false;
+                // 下一个状态
                 int nextc = c-1;
+                // 比较并且设置成功
                 if (compareAndSetState(c, nextc))
                     return nextc == 0;
             }
@@ -197,6 +205,7 @@ public class CountDownLatch {
      */
     public CountDownLatch(int count) {
         if (count < 0) throw new IllegalArgumentException("count < 0");
+        // 初始化状态数
         this.sync = new Sync(count);
     }
 

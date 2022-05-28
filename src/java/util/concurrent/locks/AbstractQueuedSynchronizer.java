@@ -299,6 +299,7 @@ public abstract class AbstractQueuedSynchronizer
     protected AbstractQueuedSynchronizer() { }
 
     /**
+     * 内部类 - Node类
      * Wait queue node class.
      *
      * <p>The wait queue is a variant of a "CLH" (Craig, Landin, and
@@ -376,13 +377,23 @@ public abstract class AbstractQueuedSynchronizer
      * Scherer and Michael Scott, along with members of JSR-166
      * expert group, for helpful ideas, discussions, and critiques
      * on the design of this class.
+     * 内部类 - Node
      */
     static final class Node {
         /** Marker to indicate a node is waiting in shared mode */
+        // 模式，分为共享与独占
+        // 共享模式
         static final Node SHARED = new Node();
         /** Marker to indicate a node is waiting in exclusive mode */
+        // 独占模式
         static final Node EXCLUSIVE = null;
 
+        // 结点状态
+        // CANCELLED，值为1，表示当前的线程被取消
+        // SIGNAL，值为-1，表示当前节点的后继节点包含的线程需要运行，也就是unpark
+        // CONDITION，值为-2，表示当前节点在等待condition，也就是在condition队列中
+        // PROPAGATE，值为-3，表示当前场景下后续的acquireShared能够得以执行
+        // 值为0，表示当前节点在sync队列中，等待着获取锁
         /** waitStatus value to indicate thread has cancelled */
         static final int CANCELLED =  1;
         /** waitStatus value to indicate successor's thread needs unparking */
@@ -429,6 +440,7 @@ public abstract class AbstractQueuedSynchronizer
          * CONDITION for condition nodes.  It is modified using CAS
          * (or when possible, unconditional volatile writes).
          */
+        // 结点状态
         volatile int waitStatus;
 
         /**
@@ -442,6 +454,7 @@ public abstract class AbstractQueuedSynchronizer
          * cancelled thread never succeeds in acquiring, and a thread only
          * cancels itself, not any other node.
          */
+        // 前驱结点
         volatile Node prev;
 
         /**
@@ -457,12 +470,14 @@ public abstract class AbstractQueuedSynchronizer
          * point to the node itself instead of null, to make life
          * easier for isOnSyncQueue.
          */
+        // 后继结点
         volatile Node next;
 
         /**
          * The thread that enqueued this node.  Initialized on
          * construction and nulled out after use.
          */
+        // 结点所对应的线程
         volatile Thread thread;
 
         /**
@@ -475,9 +490,11 @@ public abstract class AbstractQueuedSynchronizer
          * we save a field by using special value to indicate shared
          * mode.
          */
+        // 下一个等待者
         Node nextWaiter;
 
         /**
+         * // 结点是否在共享模式下等待
          * Returns true if node is waiting in shared mode.
          */
         final boolean isShared() {
@@ -485,6 +502,7 @@ public abstract class AbstractQueuedSynchronizer
         }
 
         /**
+         *  // 获取前驱结点，若前驱结点为空，抛出异常
          * Returns previous node, or throws NullPointerException if null.
          * Use when predecessor cannot be null.  The null check could
          * be elided, but is present to help the VM.
@@ -492,21 +510,25 @@ public abstract class AbstractQueuedSynchronizer
          * @return the predecessor of this node
          */
         final Node predecessor() throws NullPointerException {
+            // 保存前驱结点
             Node p = prev;
-            if (p == null)
+            if (p == null)// 前驱结点为空，抛出异常
                 throw new NullPointerException();
-            else
+            else// 前驱结点不为空，返回
                 return p;
         }
 
+        // 无参构造方法
         Node() {    // Used to establish initial head or SHARED marker
         }
 
+        // 构造方法
         Node(Thread thread, Node mode) {     // Used by addWaiter
             this.nextWaiter = mode;
             this.thread = thread;
         }
 
+        // 构造方法
         Node(Thread thread, int waitStatus) { // Used by Condition
             this.waitStatus = waitStatus;
             this.thread = thread;
@@ -519,17 +541,20 @@ public abstract class AbstractQueuedSynchronizer
      * If head exists, its waitStatus is guaranteed not to be
      * CANCELLED.
      */
+    // 头节点
     private transient volatile Node head;
 
     /**
      * Tail of the wait queue, lazily initialized.  Modified only via
      * method enq to add new wait node.
      */
+    // 尾结点
     private transient volatile Node tail;
 
     /**
      * The synchronization state.
      */
+    // 状态
     private volatile int state;
 
     /**
@@ -573,24 +598,29 @@ public abstract class AbstractQueuedSynchronizer
      * rather than to use timed park. A rough estimate suffices
      * to improve responsiveness with very short timeouts.
      */
+    // 自旋时间
     static final long spinForTimeoutThreshold = 1000L;
 
-    /**
+    /**\
+     *
      * Inserts node into queue, initializing if necessary. See picture above.
      * @param node the node to insert
      * @return node's predecessor
      */
     private Node enq(final Node node) {
-        for (;;) {
+        for (;;) {// 无限循环，确保结点能够成功入队列
+            // 保存尾结点
             Node t = tail;
-            if (t == null) { // Must initialize
-                if (compareAndSetHead(new Node()))
-                    tail = head;
-            } else {
+            if (t == null) {// 尾结点为空，即还没被初始化 // Must initialize
+                if (compareAndSetHead(new Node()))// 头节点为空，并设置头节点为新生成的结点
+                    tail = head;// 头节点与尾结点都指向同一个新生结点
+            } else {// 尾结点不为空，即已经被初始化过
+                // 将node结点的prev域连接到尾结点
                 node.prev = t;
-                if (compareAndSetTail(t, node)) {
+                if (compareAndSetTail(t, node)) { // 比较结点t是否为尾结点，若是则将尾结点设置为node
+                    // 设置尾结点的next域为node
                     t.next = node;
-                    return t;
+                    return t;// 返回尾结点
                 }
             }
         }
@@ -604,22 +634,23 @@ public abstract class AbstractQueuedSynchronizer
      * @return the new node
      */
     private Node addWaiter(Node mode) {
-        // 1. 通过当前的线程和锁模式新建一个节点。
+        // 新生成一个结点，默认为独占模式
         Node node = new Node(Thread.currentThread(), mode);
         // Try the fast path of enq; backup to full enq on failure
-        // 2. Pred指针指向尾节点Tail。
+        // 保存尾结点
         Node pred = tail;
-        if (pred != null) {
-            // 3. 将New中Node的Prev指针指向Pred。
+        if (pred != null) { // 尾结点不为空，即已经被初始化
+            // 将node结点的prev域连接到尾结点
             node.prev = pred;
             // 4. 通过compareAndSetTail方法，完成尾节点的设置。这个方法主要是对 tailOffset和 Expect进行比较，
             // 如果 tailOffset的 Node和 Expect的 Node地址是相同的，那么设置 Tail的值为 Update的值。
-            if (compareAndSetTail(pred, node)) {
+            if (compareAndSetTail(pred, node)) {// 比较pred是否为尾结点，是则将尾结点设置为node
+                // 设置尾结点的next域为node
                 pred.next = node;
-                return node;
+                return node;// 返回新生成的结点
             }
         }
-        enq(node);
+        enq(node);// 尾结点为空(即还没有被初始化过)，或者是compareAndSetTail操作失败，则入队列
         return node;
     }
 
@@ -690,20 +721,24 @@ public abstract class AbstractQueuedSynchronizer
          * unparkSuccessor, we need to know if CAS to reset status
          * fails, if so rechecking.
          */
+        // 无限循环
         for (;;) {
+            // 保存头节点
             Node h = head;
-            if (h != null && h != tail) {
+            if (h != null && h != tail) {// 头节点不为空并且头节点不为尾结点
+                // 获取头节点的等待状态
                 int ws = h.waitStatus;
-                if (ws == Node.SIGNAL) {
-                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                if (ws == Node.SIGNAL) {// 状态为SIGNAL
+                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))// 不成功就继续
                         continue;            // loop to recheck cases
+                    // 释放后继结点
                     unparkSuccessor(h);
                 }
                 else if (ws == 0 &&
-                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) // 状态为0并且不成功，继续
                     continue;                // loop on failed CAS
             }
-            if (h == head)                   // loop if head changed
+            if (h == head)  // 若头节点改变，继续循环                   // loop if head changed
                 break;
         }
     }
@@ -717,7 +752,9 @@ public abstract class AbstractQueuedSynchronizer
      * @param propagate the return value from a tryAcquireShared
      */
     private void setHeadAndPropagate(Node node, int propagate) {
+        // 获取头节点
         Node h = head; // Record old head for check below
+        // 设置头节点
         setHead(node);
         /*
          * Try to signal next queued node if:
@@ -735,10 +772,13 @@ public abstract class AbstractQueuedSynchronizer
          * racing acquires/releases, so most need signals now or soon
          * anyway.
          */
+        // 进行判断
         if (propagate > 0 || h == null || h.waitStatus < 0 ||
             (h = head) == null || h.waitStatus < 0) {
+            // 获取节点的后继
             Node s = node.next;
-            if (s == null || s.isShared())
+            if (s == null || s.isShared()) // 后继为空或者为共享模式
+                // 以共享模式进行释放
                 doReleaseShared();
         }
     }
@@ -1015,22 +1055,28 @@ public abstract class AbstractQueuedSynchronizer
      */
     private void doAcquireSharedInterruptibly(int arg)
         throws InterruptedException {
+        // 添加节点至等待队列
         final Node node = addWaiter(Node.SHARED);
         boolean failed = true;
         try {
-            for (;;) {
+            for (;;) {// 无限循环
+                // 获取node的前驱节点
                 final Node p = node.predecessor();
-                if (p == head) {
+                if (p == head) { // 前驱节点为头节点
+                    // 试图在共享模式下获取对象状态
                     int r = tryAcquireShared(arg);
-                    if (r >= 0) {
+                    if (r >= 0) {// 获取成功
+                        // 设置头节点并进行繁殖
                         setHeadAndPropagate(node, r);
+                        // 设置节点next域
                         p.next = null; // help GC
                         failed = false;
                         return;
                     }
                 }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())
+                    parkAndCheckInterrupt())// 在获取失败后是否需要禁止线程并且进行中断检查
+                    // 抛出异常
                     throw new InterruptedException();
             }
         } finally {
@@ -1885,17 +1931,21 @@ public abstract class AbstractQueuedSynchronizer
      *
      * <p>This class is Serializable, but all fields are transient,
      * so deserialized conditions have no waiters.
+     * 内部类
      */
     public class ConditionObject implements Condition, java.io.Serializable {
         private static final long serialVersionUID = 1173984872572414699L;
         /** First node of condition queue. */
+        // condition队列的头节点
         private transient Node firstWaiter;
         /** Last node of condition queue. */
+        // condition队列的尾结点
         private transient Node lastWaiter;
 
         /**
          * Creates a new {@code ConditionObject} instance.
          */
+        // 构造方法
         public ConditionObject() { }
 
         // Internal methods
@@ -1904,18 +1954,26 @@ public abstract class AbstractQueuedSynchronizer
          * Adds a new waiter to wait queue.
          * @return its new wait node
          */
+        // 添加新的waiter到wait队列
         private Node addConditionWaiter() {
+            // 保存尾结点
             Node t = lastWaiter;
             // If lastWaiter is cancelled, clean out.
-            if (t != null && t.waitStatus != Node.CONDITION) {
+            if (t != null && t.waitStatus != Node.CONDITION) {// 尾结点不为空，并且尾结点的状态不为CONDITION
+                // 清除状态为CONDITION的结点
                 unlinkCancelledWaiters();
+                // 将最后一个结点重新赋值给t
                 t = lastWaiter;
             }
+            // 新建一个结点
             Node node = new Node(Thread.currentThread(), Node.CONDITION);
-            if (t == null)
+            if (t == null)// 尾结点为空
+                // 设置condition队列的头节点
                 firstWaiter = node;
-            else
+            else// 尾结点不为空
+                // 设置为节点的nextWaiter域为node结点
                 t.nextWaiter = node;
+            // 更新condition队列的尾结点
             lastWaiter = node;
             return node;
         }
@@ -1927,6 +1985,7 @@ public abstract class AbstractQueuedSynchronizer
          * @param first (non-null) the first node on condition queue
          */
         private void doSignal(Node first) {
+            // 循环
             do {
                 // firstWaiter = first.nextWaiter   重新赋值等待队列头结点
                 if ( (firstWaiter = first.nextWaiter) == null)
@@ -1944,13 +2003,18 @@ public abstract class AbstractQueuedSynchronizer
          * @param first (non-null) the first node on condition queue
          */
         private void doSignalAll(Node first) {
+            // condition队列的头节点尾结点都设置为空
             lastWaiter = firstWaiter = null;
             // 遍历所有的等待队列
             do {
+                // 获取first结点的nextWaiter域结点
                 Node next = first.nextWaiter;
+                // 设置first结点的nextWaiter域为空
                 first.nextWaiter = null;
                 // 等待队列转移到同步队列，signal方法也是同样转移的
+                // 将first结点从condition队列转移到sync队列
                 transferForSignal(first);
+                // 重新设置first
                 first = next;
             } while (first != null);
         }
@@ -1969,22 +2033,31 @@ public abstract class AbstractQueuedSynchronizer
          * without requiring many re-traversals during cancellation
          * storms.
          */
+        // 从condition队列中清除状态为CANCEL的结点
         private void unlinkCancelledWaiters() {
+            // 保存condition队列头节点
             Node t = firstWaiter;
             Node trail = null;
-            while (t != null) {
+            while (t != null) { // t不为空
+                // 下一个结点
                 Node next = t.nextWaiter;
-                if (t.waitStatus != Node.CONDITION) {
+                if (t.waitStatus != Node.CONDITION) { // t结点的状态不为CONDTION状态
+                    // 设置t节点的nextWaiter域为空
                     t.nextWaiter = null;
-                    if (trail == null)
+                    if (trail == null) // trail为空
+                        // 重新设置condition队列的头节点
                         firstWaiter = next;
-                    else
+                    else// trail不为空
+                        // 设置trail结点的nextWaiter域为next结点
                         trail.nextWaiter = next;
-                    if (next == null)
+                    if (next == null)// next结点为空
+                        // 设置condition队列的尾结点
                         lastWaiter = trail;
                 }
-                else
+                else// t结点的状态为CONDTION状态
+                    // 设置trail结点
                     trail = t;
+                // 设置t结点
                 t = next;
             }
         }
@@ -1999,6 +2072,7 @@ public abstract class AbstractQueuedSynchronizer
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *         returns {@code false}
          */
+        // 唤醒一个等待线程。如果所有的线程都在等待此条件，则选择其中的一个唤醒。在从 await 返回之前，该线程必须重新获取锁。
         public final void signal() {
             // 判断是否是当前线程持有锁，不是则抛出异常
             // 说明了调用这个方法之前也必须要持有锁
@@ -2018,11 +2092,14 @@ public abstract class AbstractQueuedSynchronizer
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *         returns {@code false}
          */
+        // 唤醒所有等待线程。如果所有的线程都在等待此条件，则唤醒所有线程。在从 await 返回之前，每个线程都必须重新获取锁。
         public final void signalAll() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively())// 不被当前线程独占，抛出异常
                 throw new IllegalMonitorStateException();
+            // 保存condition队列头节点
             Node first = firstWaiter;
-            if (first != null)
+            if (first != null)// 头节点不为空
+                // 唤醒所有等待线程
                 doSignalAll(first);
         }
 
@@ -2037,13 +2114,18 @@ public abstract class AbstractQueuedSynchronizer
          *      {@link #acquire} with saved state as argument.
          * </ol>
          */
+        // 等待，当前线程在接到信号之前一直处于等待状态，不响应中断
         public final void awaitUninterruptibly() {
+            // 添加一个结点到等待队列
             Node node = addConditionWaiter();
+            // 获取释放的状态
             int savedState = fullyRelease(node);
             boolean interrupted = false;
             while (!isOnSyncQueue(node)) {
+                // 阻塞当前线程
                 LockSupport.park(this);
-                if (Thread.interrupted())
+                if (Thread.interrupted())// 当前线程被中断
+                    // 设置interrupted状态
                     interrupted = true;
             }
             if (acquireQueued(node, savedState) || interrupted)
@@ -2098,6 +2180,7 @@ public abstract class AbstractQueuedSynchronizer
          * <li> If interrupted while blocked in step 4, throw InterruptedException.
          * </ol>
          */
+        // 等待，当前线程在接到信号或被中断之前一直处于等待状态
         public final void await() throws InterruptedException {
             if (Thread.interrupted())
                 // 如果当前线程被中断，抛出InterruptedException
@@ -2111,6 +2194,7 @@ public abstract class AbstractQueuedSynchronizer
             // 检查当前节点的是否在同步队列，注意前面的感叹号，是节点不在同步队列中，才将当前线程park
             while (!isOnSyncQueue(node)) {
                 // 调用Unsafa类底层阻塞线程，等待唤醒自己的条件信号
+                // 阻塞当前线程
                 LockSupport.park(this);
                 // 当被唤醒以后，接着从下面开始执行
                 // checkInterruptWhileWaiting 检查线程是否被中断
@@ -2142,6 +2226,7 @@ public abstract class AbstractQueuedSynchronizer
          * <li> If interrupted while blocked in step 4, throw InterruptedException.
          * </ol>
          */
+        // 等待，当前线程在接到信号、被中断或到达指定等待时间之前一直处于等待状态
         public final long awaitNanos(long nanosTimeout)
                 throws InterruptedException {
             if (Thread.interrupted())
@@ -2184,6 +2269,7 @@ public abstract class AbstractQueuedSynchronizer
          * <li> If timed out while blocked in step 4, return false, else true.
          * </ol>
          */
+        // 等待，当前线程在接到信号、被中断或到达指定最后期限之前一直处于等待状态
         public final boolean awaitUntil(Date deadline)
                 throws InterruptedException {
             long abstime = deadline.getTime();
@@ -2225,6 +2311,7 @@ public abstract class AbstractQueuedSynchronizer
          * <li> If timed out while blocked in step 4, return false, else true.
          * </ol>
          */
+        // 等待，当前线程在接到信号、被中断或到达指定等待时间之前一直处于等待状态。此方法在行为上等效于: awaitNanos(unit.toNanos(time)) > 0
         public final boolean await(long time, TimeUnit unit)
                 throws InterruptedException {
             long nanosTimeout = unit.toNanos(time);
@@ -2287,6 +2374,7 @@ public abstract class AbstractQueuedSynchronizer
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *         returns {@code false}
          */
+        //  查询是否有正在等待此条件的任何线程
         protected final boolean hasWaiters() {
             if (!isHeldExclusively())
                 throw new IllegalMonitorStateException();
@@ -2306,6 +2394,7 @@ public abstract class AbstractQueuedSynchronizer
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *         returns {@code false}
          */
+        // 返回正在等待此条件的线程数估计值
         protected final int getWaitQueueLength() {
             if (!isHeldExclusively())
                 throw new IllegalMonitorStateException();
@@ -2326,6 +2415,7 @@ public abstract class AbstractQueuedSynchronizer
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *         returns {@code false}
          */
+        // 返回包含那些可能正在等待此条件的线程集合
         protected final Collection<Thread> getWaitingThreads() {
             if (!isHeldExclusively())
                 throw new IllegalMonitorStateException();
@@ -2350,11 +2440,16 @@ public abstract class AbstractQueuedSynchronizer
      * are at it, we do the same for other CASable fields (which could
      * otherwise be done with atomic field updaters).
      */
+    // Unsafe类实例
     private static final Unsafe unsafe = Unsafe.getUnsafe();
+    // state内存偏移地址
     private static final long stateOffset;
+    // head内存偏移地址
     private static final long headOffset;
+    // tail内存偏移地址
     private static final long tailOffset;
     private static final long waitStatusOffset;
+    // next内存偏移地址
     private static final long nextOffset;
 
     /**
