@@ -36,6 +36,8 @@
 package java.util.concurrent.locks;
 import sun.misc.Unsafe;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * Basic thread blocking primitives for creating locks and other
  * synchronization classes.
@@ -122,6 +124,7 @@ public class LockSupport {
 
     private static void setBlocker(Thread t, Object arg) {
         // Even though volatile, hotspot doesn't need a write barrier here.
+        // 设置线程t的parkBlocker字段的值为arg
         UNSAFE.putObject(t, parkBlockerOffset, arg);
     }
 
@@ -137,8 +140,9 @@ public class LockSupport {
      *        this operation has no effect
      */
     public static void unpark(Thread thread) {
+        // 线程为不空
         if (thread != null)
-            UNSAFE.unpark(thread);
+            UNSAFE.unpark(thread);// 释放该线程许可
     }
 
     /**
@@ -170,9 +174,13 @@ public class LockSupport {
      * @since 1.6
      */
     public static void park(Object blocker) {
+        // 获取当前线程
         Thread t = Thread.currentThread();
+        // 设置Blocker
         setBlocker(t, blocker);
+        // 获取许可
         UNSAFE.park(false, 0L);
+        // 重新可运行后再此设置Blocker
         setBlocker(t, null);
     }
 
@@ -209,10 +217,15 @@ public class LockSupport {
      * @since 1.6
      */
     public static void parkNanos(Object blocker, long nanos) {
+        // 时间大于0
         if (nanos > 0) {
+            // 获取当前线程
             Thread t = Thread.currentThread();
+            // 设置Blocker
             setBlocker(t, blocker);
+            // 获取许可，并设置了时间
             UNSAFE.park(false, nanos);
+            // 设置许可
             setBlocker(t, null);
         }
     }
@@ -251,9 +264,12 @@ public class LockSupport {
      * @since 1.6
      */
     public static void parkUntil(Object blocker, long deadline) {
+        // 获取当前线程
         Thread t = Thread.currentThread();
+        // 设置Blocker
         setBlocker(t, blocker);
         UNSAFE.park(true, deadline);
+        // 设置Blocker为null
         setBlocker(t, null);
     }
 
@@ -301,6 +317,7 @@ public class LockSupport {
      * for example, the interrupt status of the thread upon return.
      */
     public static void park() {
+        // 获取许可，设置时间为无限长，直到可以获取许可
         UNSAFE.park(false, 0L);
     }
 
@@ -392,20 +409,30 @@ public class LockSupport {
 
     // Hotspot implementation via intrinsics API
     private static final sun.misc.Unsafe UNSAFE;
+    // parkBlocker字段的内存偏移地址
     private static final long parkBlockerOffset;
+    //threadLocalRandomSeed字段的内存偏移地址
     private static final long SEED;
+    // threadLocalRandomProbe字段的内存偏移地址
     private static final long PROBE;
+    // threadLocalRandomSecondarySeed字段的内存偏移地址
     private static final long SECONDARY;
     static {
         try {
+            // 获取Unsafe实例
             UNSAFE = sun.misc.Unsafe.getUnsafe();
+            // 线程类类型
             Class<?> tk = Thread.class;
+            // 获取Thread的parkBlocker字段的内存偏移地址
             parkBlockerOffset = UNSAFE.objectFieldOffset
                 (tk.getDeclaredField("parkBlocker"));
+            // 获取Thread的threadLocalRandomSeed字段的内存偏移地址
             SEED = UNSAFE.objectFieldOffset
                 (tk.getDeclaredField("threadLocalRandomSeed"));
+            // 获取Thread的threadLocalRandomProbe字段的内存偏移地址
             PROBE = UNSAFE.objectFieldOffset
                 (tk.getDeclaredField("threadLocalRandomProbe"));
+            // 获取Thread的threadLocalRandomSecondarySeed字段的内存偏移地址
             SECONDARY = UNSAFE.objectFieldOffset
                 (tk.getDeclaredField("threadLocalRandomSecondarySeed"));
         } catch (Exception ex) { throw new Error(ex); }

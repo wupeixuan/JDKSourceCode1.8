@@ -30,6 +30,14 @@
 
 <a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/util/concurrent/ThreadPoolExecutor.java">ThreadPoolExecutor 源码解析</a>
 
+<a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/util/concurrent/locks/ReentrantLock.java">ReentrantLock源码解析</a>
+
+- 参考文章 [ReentrantLock源码分析](https://java.isture.com/thread/concurrent/ReentrantLock/source/ReentrantLock%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html)
+
+<a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/util/concurrent/locks/AbstractQueuedSynchronizer.java">AbstractQueuedSynchronizer(AQS源码分析)</a>
+
+- 参考文章 [锁核心类AQS详解](https://java.isture.com/thread/JUCLock/锁核心类AQS详解.html)
+
 ## 其他
 
 <a href="https://github.com/wupeixuan/JDKSourceCode1.8/blob/master/src/java/lang/Object.java">Object 源码解析</a>

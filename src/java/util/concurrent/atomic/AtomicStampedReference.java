@@ -49,32 +49,51 @@ package java.util.concurrent.atomic;
  */
 public class AtomicStampedReference<V> {
 
+    /**
+     * Pair内部类，用于维护reference和stamp
+     * @param <T>
+     */
     private static class Pair<T> {
+        /**
+         * 真正的数据
+         */
         final T reference;
+        /**
+         * 版本号
+         */
         final int stamp;
         private Pair(T reference, int stamp) {
             this.reference = reference;
             this.stamp = stamp;
         }
+        /**
+         * 返回Pair实例
+         */
         static <T> Pair<T> of(T reference, int stamp) {
             return new Pair<T>(reference, stamp);
         }
     }
 
+    /**
+     * 由于要维护两个属性，因此干脆使用一个内部类对象来维护这两个属性
+     */
     private volatile Pair<V> pair;
 
     /**
+     * 创建具有给定初始值的新 AtomicStampedReference。
      * Creates a new {@code AtomicStampedReference} with the given
      * initial values.
      *
-     * @param initialRef the initial reference
-     * @param initialStamp the initial stamp
+     * @param initialRef the initial reference 初始值
+     * @param initialStamp the initial stamp 初始版本号
      */
     public AtomicStampedReference(V initialRef, int initialStamp) {
+        //初始化一个Pair对象，并初始化属性值
         pair = Pair.of(initialRef, initialStamp);
     }
 
     /**
+     *  获得当前保存的对象引用
      * Returns the current value of the reference.
      *
      * @return the current value of the reference
@@ -84,6 +103,7 @@ public class AtomicStampedReference<V> {
     }
 
     /**
+     * 获得当前保存的版本号
      * Returns the current value of the stamp.
      *
      * @return the current value of the stamp
@@ -131,6 +151,7 @@ public class AtomicStampedReference<V> {
     }
 
     /**
+     *  如果当前引用 == 预期引用，并且当前版本号等于预期版本号，则以原子方式将该引用和该标志的值设置为给定的更新值。
      * Atomically sets the value of both the reference and stamp
      * to the given update values if the
      * current reference is {@code ==} to the expected reference
@@ -147,6 +168,8 @@ public class AtomicStampedReference<V> {
                                  int expectedStamp,
                                  int newStamp) {
         Pair<V> current = pair;
+        //一系列的判断，如果两个预期值都相等，那么尝试调用compareAndSwapObject使用新的Pair对象替代旧的Pair对象
+        //这样就同时完成了reference和stamp的更新
         return
             expectedReference == current.reference &&
             expectedStamp == current.stamp &&
@@ -156,13 +179,16 @@ public class AtomicStampedReference<V> {
     }
 
     /**
+     * 设置新对象引用和版本号
      * Unconditionally sets the value of both the reference and stamp.
      *
-     * @param newReference the new value for the reference
-     * @param newStamp the new value for the stamp
+     * @param newReference the new value for the reference 新对象引用
+     * @param newStamp the new value for the stamp 新版本号
      */
     public void set(V newReference, int newStamp) {
         Pair<V> current = pair;
+        //如果新对象引用以及新版本号和之前的都一样那就不设置
+        //否则就是新建一个Pair对象并设置相应的属性，替代原来的Pair对象
         if (newReference != current.reference || newStamp != current.stamp)
             this.pair = Pair.of(newReference, newStamp);
     }
@@ -194,6 +220,13 @@ public class AtomicStampedReference<V> {
     private static final long pairOffset =
         objectFieldOffset(UNSAFE, "pair", AtomicStampedReference.class);
 
+    /**
+     * CAS替换内部的Pair对象的方法
+     *
+     * @param cmp 预期pair对象
+     * @param val 新pair对象
+     * @return 如果成功，则返回 true
+     */
     private boolean casPair(Pair<V> cmp, Pair<V> val) {
         return UNSAFE.compareAndSwapObject(this, pairOffset, cmp, val);
     }
